@@ -1,0 +1,55 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Поиск{% endblock title %}
+
+{% block content %}
+<div class="container my-2">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="font-italic mt-3">Результаты поиска по ключевым словам: "{{ query }}"</h1>
+            <h3 class="mb-4">Найдено совпадений: {{ results.paginator.count }}</h3>
+            {% if results %}
+                {% for item in results.object_list %}
+                    <h5><a href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}">{{ item.title }}</a></h5>
+                    <p class="text-muted"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.published.strftime('%d.%m.%y') }}</p>
+                    <p>{{ item.news_text|truncate(200) }}</p>
+                    <p><span class="font-italic font-weight-bold">Тэги:</span>
+                        {% for tag in item.tags %}
+                            <a class="font-italic font-weight-bold mx-2" href="{{ url_for('main.news_slug', slug=tag.slug) }}">{{ tag.tag_name }}</a>
+                        {% endfor %}
+                    </p>
+                    <a class="btn btn-outline-primary px-3 my-3" href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}">читать далее...</a>
+                    <hr class="mb-3">
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row mt-5 mb-3">
+        <div class="col-12">
+            <nav class="pagination justify-content-center">
+                <ul class="pagination justify-content-center">
+                    {% if results.has_previous() %}
+                        <li class="page-item"><a class="page-link" href="{{request.path}}?q={{ request.args.get("q") }}&page={{ results.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo;</a></li>
+                    {% endif %}
+                    {% for p in results.paginator.pages_range %}
+                        {% if p > (results.number - 4) and p < (results.number + 4) %}
+                            {% if results.number == p %}
+                                <li class="page-item active"><a class="page-link" href="{{request.path}}?q={{ request.args.get("q") }}&page={{ p }}">{{ p }}</a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="{{request.path}}?q={{ request.args.get("q") }}&page={{ p }}">{{ p }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if results.has_next() %}
+                        <li class="page-item"><a class="page-link" href="{{request.path}}?q={{ request.args.get("q") }}&page={{ results.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock content %}

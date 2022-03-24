@@ -1,0 +1,27 @@
+<div class="row mt-5 mb-3">
+    <div class="col-12">
+        <nav class="pagination justify-content-center">
+            <ul class="pagination justify-content-center">
+                {% if results.has_previous() %}
+                    <li class="page-item"><a class="page-link" href="{{request.path}}?page={{ results.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo;</a></li>
+                {% endif %}
+                {% for p in results.paginator.pages_range %}
+                    {% if p > (results.number - 4) and p < (results.number + 4) %}
+                        {% if results.number == p %}
+                            <li class="page-item active"><a class="page-link" href="{{request.path}}?page={{ p }}">{{ p }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="{{request.path}}?page={{ p }}">{{ p }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if results.has_next() %}
+                    <li class="page-item"><a class="page-link" href="{{request.path}}?page={{ results.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>

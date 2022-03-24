@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %} {{ title|title }} {% endblock %}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}"/>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="{{ url_for('main.search') }}" method="get">
+							<input class="form-control" type="text" name="q" placeholder="введите запрос..." required>
+							<button class="btn btn-primary px-5 mt-3" type="submit">поиск</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark" style="background: #423c38;">
+		  <div class="container-fluid">
+			  <a class="navbar-brand" href="{{ url_for('main.index') }}"><strong>NewsBlog</strong></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			  <ul class="navbar-nav ml-auto mr-5 mb-2 mb-lg-0">
+				<li class="nav-item mt-2 mr-3"><a data-toggle="modal" data-target="#searchModal" href="#">
+					<i class="fa fa-search fa-lg" aria-hidden="true" style="color: white;"></i></a>
+				</li>
+			    <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+						{% if current_user.is_authenticated %}
+						{{ current_user.username }}
+						{% else %}
+						<!--img src="{{ url_for('static',  filename='img/login.png') }}" alt="user_logo" style="width: 24px;"-->
+						<i class="fa fa-user-o fa-lg" aria-hidden="true" style="color: white;"></i>
+						{% endif %}
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown" style="min-width: 9rem;">
+						{% if current_user.is_authenticated %}
+							<a href="{{ url_for('main.bookmarks', id=current_user.id) }}" class="dropdown-item">Закладки 
+								{% if current_user.bookmarks %}<span class="bookmark_counter">({{ current_user.bookmarks|length }})</span>{% endif %}
+							</a>
+							<a href="{{ url_for('auth.logout') }}" class="dropdown-item">Выйти</a>
+						{% else %}
+							<a href="{{ url_for('auth.login') }}?next={{ request.full_path }}" class="dropdown-item">Войти</a>
+							<a href="{{ url_for('auth.singup') }}" class="dropdown-item">Регистрация</a>
+						{% endif %}
+					</div>
+				</li>
+			  </ul>
+			</div>
+		  </div>
+		</nav>
+	</header>
+
+    {% block content %}
+
+    {% endblock %}
+	<footer>
+		<div class="container-fluid bg-dark" style="height:60px;">
+			<div class="row">
+				<div class="col-12">
+					<p class=" mt-4 mb-0 ml-5 copyright">&#169; {{now.strftime('%Y')}} All rights reserved</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	{% block js %}
+	<script src="{{ url_for('static', filename='js/jquery-3.6.0-min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+	<script src="https://use.fontawesome.com/aeedf3f379.js"></script>
+	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+	{% endblock %}
+</body>
+</html>

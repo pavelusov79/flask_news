@@ -1,0 +1,22 @@
+{% extends 'admin/base.html' %}
+
+{% block body %}
+{{ super() }}
+<div class="row mt-3 mb-5">
+    <div class="col-12">
+        <h1 class='font-italic mb-5' style="color: black;">Статистика посещений сайта</h1>
+        <p>Выберите период:</p>
+        <form method='get'>
+            <input id="data_1" name="data_1" type="date" required> - <input id="data_2" name="data_2" type="date" required>
+            <button id="counter" class="btn btn-primary ml-5" type="submit">получить данные</button>
+        </form>
+        <div class="results">
+            {% if data_1 and data_2 %}
+                <h5 style="color:black;" class="my-5">За период с {{ data_1.strftime('%d.%m.%y') }} по {{ data_2.strftime('%d.%m.%y') }} 
+                    количество посещений сайта: {{ st|length }}
+                </h5>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

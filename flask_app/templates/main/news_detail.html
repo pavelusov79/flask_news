@@ -1,0 +1,101 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ news_detail.title|title }}{% endblock title %}
+
+{% block content %}
+<nav aria-label="breadcrumb mt-2">
+    <ol class="breadcrumb px-5 mt-4 mx-2">
+      <li class="breadcrumb-item">
+        {% if session['search'] %}
+            <a href="{{ session['search'] }}">Назад к результатам поиска</a>
+        {% else %}
+            <a href="{{ session['page'] }}">Назад к списку новостей</a>
+        {% endif %}
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">{{ news_detail.title }}</li>
+    </ol>
+  </nav>
+<div class="container mt-3 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+            <div class="d-flex">
+                <img class="mr-3 img-fluid" src="{{ url_for('static', filename='/'.join(news_detail.img.split('/')[-3:])) }}" alt="img">
+            </div>
+            <h1 class="font-italic my-3 text-center">{{ news_detail.title }}</h1>
+            <p class="text-muted"><i class="fa fa-clock-o fa-lg" aria-hidden="true"></i> <span class="h5">{{ news_detail.published.strftime("%d.%m.%y") }}</span>
+                {% if bookmark %}
+                    <span id="bookmark" class="ml-5" title="удалить из закладок" data-url="{{ url_for('main.news_detail', id=news_detail.id, slug=news_detail.slug) }}">
+                        <i id="mark" class="fa fa-bookmark fa-2x pt-2" aria-hidden="true"></i>
+                    </span>
+                {% else %}
+                    <span id="bookmark" class="ml-5" title="добавить в закладки" data-url="{{ url_for('main.news_detail', id=news_detail.id, slug=news_detail.slug) }}">
+                        <i id="mark" class="fa fa-bookmark-o fa-2x pt-2" aria-hidden="true"></i>
+                    </span>
+                {% endif %}
+            </p>
+            <p style="text-align: justify;">{{ news_detail.news_text }}</p>
+            <p><a class="font-italic" href="{{ news_detail.news_url }}" target="_blank" style="font-size: 1.2rem;">Перейти на оригинал статьи</a></p>
+            <p class="mt-4 mb-4">
+                <span><a id="likes" class="btn btn-outline-secondary" href="#" data-url="{{ url_for('main.news_detail', id=news_detail.id, slug=news_detail.slug) }}">
+                    <i class="fa fa-thumbs-o-up"></i><span id="count-likes" class="badge badge-light ml-2">{{ news_detail.likes }}</span>
+                    </a>
+                </span>
+                <span class="ml-5 mt-3 mb-3 font-italic font-weight-bold"><span>Тэги:</span>
+                    {% for tag in news_detail.tags %}
+                        <a class="font-italic font-weight-bold mx-2" href="{{ url_for('main.news_slug', slug=tag.slug) }}">{{ tag.tag_name }}</a>
+                    {% endfor %}
+                </span>
+            </p>
+            <p class=""><i class="fa fa-eye fa-2x" aria-hidden="true"></i><span class="ml-3" style="font-size: 1.4rem;">{{ news_detail.visits }}</span></p>
+            <p class="mb-3 font-italic">Поделиться:
+                <span class="mx-3"><a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&su=Ссылка на новость с сайта NewsBlog&body={{ request.url }}"
+                    title="поделиться по почте" target="_blank" rel="nofollow">
+                    <i class="fa fa-envelope-o fa-2x" aria-hidden="true" style="color: black;"></i></a>
+                </span>
+                <span  class="mx-3"><a href="https://twitter.com/intent/tweet?text={{ request.url }}" target="_blank" title="поделиться в twitter" rel="nofollow">
+                    <i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a>
+                </span>
+                <span class="mx-3"><a href="https://telegram.me/share/url?url={{ request.url }}" target="_blank" rel="nofollow"
+                    title="поделиться в telegram"><i class="fa fa-telegram fa-2x" aria-hidden="true"></i></a>
+                </span>
+                <span class="mx-3"><a href="https://api.whatsapp.com/send?text=новостная статья {{ request.url }}" target="_blank" title="поделиться в whatsapp" rel="nofollow">
+                    <i class="fa fa-whatsapp fa-2x" aria-hidden="true" style="color: #129d0a;"></i></a>
+                </span>
+            </p>
+            <p class="mt-4">КОММЕНТАРИИ</p>
+            <hr>
+            {% if comments %}
+                {% for comment in comments %}
+                    <p class="font-italic"><span>{{ comment.comment_date.strftime("%d.%m.%y %H:%M") }}</span><span class="ml-5">от пользователя: {{ comment.user.name }}</span></p>
+                    <div class="font-italic">{{ comment.comment_text }}</div>
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <div class="my-5 font-italic">Комментариев нет</div>
+            {% endif %}
+            <button id="comment" class="btn-outline-secondary py-2 px-4 mt-2">оставить комментарий &#9998;</button>
+            <div class="show_comment my-4">
+                {% if current_user.is_authenticated %}
+                    <form id="send-comment" action="{{ url_for('main.news_detail', id=news_detail.id, slug=news_detail.slug) }}" method="post">
+                        {{ form.csrf_token }}
+                        {% if form.text.errors %}
+                            {% for error in form.text.errors %}
+                                <div class="errors my-3">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {{ form.text(placeholder="текст комметария..", class="form-control", rows=6) }}
+                        <button class="btn btn-primary mt-3 mb-4 px-3">отправить комментарий</button>
+                    </form>
+                {% else %}
+                    <p class="mt-3">Анонимные пользователи не могут оставлять комментарии.</p>
+                    <p>Просим Вас <a href="{{ url_for('auth.login') }}?next={{ request.path }}">авторизоваться</a> или
+                        <a href="{{ url_for('auth.singup') }}">зарегистрироваться</a>.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Главная{% endblock title %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center mb-3">
+        <div class="col-12 col-md-10">
+            <div class="card">
+                <img class="card-img-top" src="{{ url_for('static', filename='/'.join(news_last.img.split('/')[-3:])) }}" alt="img">
+                <div class="card-body">
+                    <h1 class="card-title">{{ news_last.title }}</h1>
+                    <p class="text-muted"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ news_last.published.strftime('%d.%m.%y') }}</p>
+                    <h6>{{ news_last.news_text|truncate(200) }}</h6>
+                    <p><span class="font-italic font-weight-bold">Тэги:</span>
+                        {% for tag in news_last.tags %}
+                            <a class="font-italic font-weight-bold mx-2" href="{{ url_for('main.news_slug', slug=tag.slug) }}">{{ tag.tag_name }}</a>
+                        {% endfor %}
+                    </p>
+                    <a class="btn btn-outline-primary px-3 my-3" href="{{ url_for('main.news_detail', id=news_last.id, slug=news_last.slug) }}">читать далее...</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% for item in results.object_list %}
+        <div class="col-6 col-sm-4 news">
+            <div class="card">
+                <a href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}">
+                    <img class="card-img-top" style="height: 11rem;" src="{{ url_for('static', filename='/'.join(item.img.split('/')[-3:])) }}" alt="img">
+                </a>
+                <div class="card-body">
+                    <a href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}"><h6 class="card-title">{{ item.title }}</h6></a>
+                    <p class="text-muted"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.published.strftime('%d.%m.%y') }}</p>
+                    <p>{{ item.news_text|truncate(100) }}</p>
+                    <p><span class="font-italic font-weight-bold">Тэги:</span>
+                        {% for tag in item.tags %}
+                            <a class="font-italic font-weight-bold mx-2" href="{{ url_for('main.news_slug', slug=tag.slug) }}">{{ tag.tag_name }}</a>
+                        {% endfor %}
+                    </p>
+                    <a class="btn btn-clear text-muted px-3 my-3" href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}">читать далее...</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'main/include/pagination.html' %}
+</div>
+{% endblock content %}

@@ -1,0 +1,75 @@
+{% extends 'auth/base.html' %}
+
+{% block title %}Регистрация{% endblock title %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="font-italic text-center mb-4">Регистрация</h1>
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-8 col-md-6">
+            {% for message in get_flashed_messages() %}
+            <p class="errors my-3">{{ message }}</p>
+            {% endfor %}
+            <form method='post'>
+                {{ form.csrf_token }}
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <div class="errors my-3">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form-group mb-3">
+                    {{ form.name.label(class="col-form-label") }}
+                    {{ form.name(class="form-control") }}
+                </div>
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <div class="errors my-3">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form-group mb-3">
+                    {{ form.email.label(class="col-form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <div class="errors my-3">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form-group mb-3">
+                    {{ form.username.label(class="col-form-label") }}
+                    {{ form.username(class="form-control") }}
+                </div>
+                {% if form.password1.errors %}
+                    {% for error in form.password1.errors %}
+                        <div class="errors my-3">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form-group mb-3">
+                    {{ form.password1.label(class="col-form-label") }}
+                    {{ form.password1(class="form-control") }}
+                </div>
+                {% if form.password2.errors %}
+                    {% for error in form.password2.errors %}
+                        <div class="errors my-3">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form-group mb-3">
+                    {{ form.password2.label(class="col-form-label") }}
+                    {{ form.password2(class="form-control") }}
+                </div>
+                <button type="submit" class="px-5 mt-3 mb-5 btn btn-primary">Зарегистрироваться</button>
+            </form>  
+        </div>
+    </div>
+</div>
+{% endblock content %}

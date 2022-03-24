@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Закладки{% endblock title %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4 font-italic">Закладки для чтения</h1>
+    <div class="row results">
+        {% if user.bookmarks %}
+            {% for item in user.bookmarks %}
+                <div class="col-6 col-sm-4 news">
+                    <div class="card">
+                        <a href="{{ url_for('main.news_detail', id=item.news.id, slug=item.news.slug) }}"><img class="card-img-top" src="{{ url_for('static', filename='/'.join(item.news.img.split('/')[-3:])) }}" alt="img"></a>
+                        <div class="card-body">
+                            <a href="{{ url_for('main.news_detail', id=item.news.id, slug=item.news.slug) }}"><h6 class="card-title">{{ item.news.title }}</h6></a>
+                            <p class="text-muted"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.news.published.strftime('%d.%m.%y') }}</p>
+                            <p>{{ item.news.news_text|truncate(100) }}</p>
+                            <p><span class="font-italic font-weight-bold">Тэги:</span>
+                                {% for tag in item.news.tags %}
+                                    <a class="font-italic font-weight-bold mx-2" href="{{ url_for('main.news_slug', slug=tag.slug) }}">{{ tag.tag_name }}</a>
+                                {% endfor %}
+                            </p>
+                            <div class="text-muted d-flex justify-content-between">
+                                <a class="btn btn-clear px-3 my-3" href="{{ url_for('main.news_detail', id=item.news.id, slug=item.news.slug) }}">читать далее...</a>
+                                <span class="del_bookmark" item-id="{{ item.news.id }}" title="удалить из закладок" data-url="{{ url_for('main.bookmarks', id=user.id) }}"><i class="fa fa-bookmark fa-2x pt-2" aria-hidden="true"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="mb-5 my-3">У вас нет еще ни одной закладки для чтения</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
