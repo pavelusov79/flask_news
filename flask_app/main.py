@@ -75,6 +75,7 @@ def news_detail(id, slug):
 
 @main.route('/news/tag/<string:slug>/')
 def news_slug(slug):
+    session['page'] = request.full_path
     tag = Tags.query.filter_by(slug=slug).first()
     if not tag:
         abort(404)

@@ -7,10 +7,10 @@
     <h1 class="text-center font-italic mb-4">Фильтр по тэгу: "{{ tag.tag_name }}"</h1>
     <div class="row justify-content-center">
         {% for item in results.object_list %}
-        <div class="col-6 col-sm-4 news">
+        <div class="col-6 col-md-4 news">
             <div class="card">
                 <a href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}">
-                    <img class="card-img-top" style="height: 11rem;" src="{{ url_for('static', filename='/'.join(item.img.split('/')[-3:])) }}" alt="img">
+                    <img class="card-img-top" style="height: 11rem; object-fit:cover;" src="{{ url_for('static', filename='/'.join(item.img.split('/')[-3:])) }}" alt="img">
                 </a>
                 <div class="card-body">
                     <a href="{{ url_for('main.news_detail', id=item.id, slug=item.slug) }}"><h6 class="card-title">{{ item.title }}</h6></a>
