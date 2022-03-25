@@ -20,6 +20,16 @@ html {
 		font-size: 10px;
 	}
 }
+@media all and (max-width: 475px) {
+	.card-img-top {
+		height: 15rem!important;
+	}
+	.col-6 {
+		flex: 0 0 90%;
+		max-width: 90%;
+	}
+}
+
 html, body {
     height: 100%;
 }

@@ -1,13 +1,3 @@
-$(document).ready(function() {
-    if (window.innerWidth < 475) {
-        $('.news').removeClass('col-6').addClass('col-12');
-        $('.card-img-top').css('height', '15rem');
-    } else {
-        $('.news').removeClass('col-12').addClass('col-6');
-        $('.card-img-top').css('height', '11rem');
-    }
-});
-
 $('#likes').click(function() {
     var likes = $('#count-likes').html();
     $.ajax({
